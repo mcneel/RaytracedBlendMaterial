@@ -31,35 +31,89 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="csycles">
-      <HintPath>..\..\..\..\..\..\..\Program Files\Rhino WIP\Plug-ins\csycles.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="RhinoCyclesCore">
-      <HintPath>..\..\..\..\..\..\..\Program Files\Rhino WIP\Plug-ins\RhinoCyclesCore.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="RhinoCommon">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files\Rhino WIP\System\rhinocommon.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Eto">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files\Rhino WIP\System\Eto.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Rhino.UI">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files\Rhino WIP\System\Rhino.UI.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-  </ItemGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DEV Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DEV Release|AnyCPU'">
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+	<Choose>
+		<When Condition="'$(Configuration.Substring(0,3))' != 'DEV'">
+			<ItemGroup>
+				<Reference Include="csycles">
+					<HintPath>..\..\..\..\..\..\..\Program Files\Rhino WIP\Plug-ins\csycles.dll</HintPath>
+					<Private>False</Private>
+				</Reference>
+				<Reference Include="RhinoCyclesCore">
+					<HintPath>..\..\..\..\..\..\..\Program Files\Rhino WIP\Plug-ins\RhinoCyclesCore.dll</HintPath>
+					<Private>False</Private>
+				</Reference>
+				<Reference Include="System" />
+				<Reference Include="System.Core" />
+				<Reference Include="System.Drawing" />
+				<Reference Include="Microsoft.CSharp" />
+				<Reference Include="RhinoCommon">
+					<SpecificVersion>False</SpecificVersion>
+					<HintPath>C:\Program Files\Rhino WIP\System\rhinocommon.dll</HintPath>
+					<Private>False</Private>
+				</Reference>
+				<Reference Include="Eto">
+					<SpecificVersion>False</SpecificVersion>
+					<HintPath>C:\Program Files\Rhino WIP\System\Eto.dll</HintPath>
+					<Private>False</Private>
+				</Reference>
+				<Reference Include="Rhino.UI">
+					<SpecificVersion>False</SpecificVersion>
+					<HintPath>C:\Program Files\Rhino WIP\System\Rhino.UI.dll</HintPath>
+					<Private>False</Private>
+				</Reference>
+			</ItemGroup>
+		</When>
+		<When Condition="'$(Configuration.Substring(0,3))' == 'DEV'">
+			<ItemGroup>
+				<Reference Include="csycles">
+					<HintPath>D:\Dev\Rhino\rhino\src4\bin\Debug\Plug-ins\csycles.dll</HintPath>
+					<Private>False</Private>
+				</Reference>
+				<Reference Include="RhinoCyclesCore">
+					<HintPath>D:\Dev\Rhino\rhino\src4\bin\Debug\Plug-ins\RhinoCyclesCore.dll</HintPath>
+					<Private>False</Private>
+				</Reference>
+				<Reference Include="System" />
+				<Reference Include="System.Core" />
+				<Reference Include="System.Drawing" />
+				<Reference Include="Microsoft.CSharp" />
+				<Reference Include="RhinoCommon">
+					<SpecificVersion>False</SpecificVersion>
+					<HintPath>D:\Dev\Rhino\rhino\src4\bin\Debug\rhinocommon.dll</HintPath>
+					<Private>False</Private>
+				</Reference>
+				<Reference Include="Eto">
+					<SpecificVersion>False</SpecificVersion>
+					<HintPath>D:\Dev\Rhino\rhino\src4\bin\Debug\Eto.dll</HintPath>
+					<Private>False</Private>
+				</Reference>
+				<Reference Include="Rhino.UI">
+					<SpecificVersion>False</SpecificVersion>
+					<HintPath>D:\Dev\Rhino\rhino\src4\bin\Debug\Rhino.UI.dll</HintPath>
+					<Private>False</Private>
+				</Reference>
+			</ItemGroup>
+		</When>
+	</Choose>
   <ItemGroup>
     <Compile Include="RaytracedBlendMaterial.cs" />
     <Compile Include="RaytracedBlendMaterialPlugIn.cs" />
@@ -83,7 +137,13 @@ Erase "$(TargetPath)"</PostBuildEvent>
   <PropertyGroup>
     <FallbackCulture>en-US</FallbackCulture>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+  <PropertyGroup  Condition="'$(Configuration.Substring(0,3))' == 'DEV'">
+    <StartProgram>D:\Dev\Rhino\rhino\src4\bin\Debug\Rhino.exe</StartProgram>
+    <StartArguments>
+    </StartArguments>
+    <StartAction>Program</StartAction>
+  </PropertyGroup>
+  <PropertyGroup  Condition="'$(Configuration.Substring(0,3))' != 'DEV'">
     <StartProgram>C:\Program Files\Rhino WIP\System\Rhino.exe</StartProgram>
     <StartArguments>
     </StartArguments>
