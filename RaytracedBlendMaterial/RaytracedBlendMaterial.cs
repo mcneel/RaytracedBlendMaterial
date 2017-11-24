@@ -19,7 +19,6 @@ using RhinoCyclesCore.Materials;
 using System;
 using ccl;
 using RhinoCyclesCore;
-using RhinoCyclesCore.ExtensionMethods;
 using Rhino.Display;
 using System.Runtime.InteropServices;
 using static RhinoCyclesCore.Utilities;
