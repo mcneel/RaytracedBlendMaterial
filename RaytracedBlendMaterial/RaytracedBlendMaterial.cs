@@ -90,11 +90,13 @@ namespace RaytracedBlendMaterial
 			{
 				mat1sh = sconv.CreateCyclesShader(Mat1Rm, Gamma);
 				mat1sh.Gamma = Gamma;
+				RhinoCyclesCore.Converters.BitmapConverter.ReloadTextures(mat1sh);
 			}
 			if (Mat2Rm != null)
 			{
 				mat2sh = sconv.CreateCyclesShader(Mat2Rm, Gamma);
 				mat2sh.Gamma = Gamma;
+				RhinoCyclesCore.Converters.BitmapConverter.ReloadTextures(mat2sh);
 			}
 
 			RhinoCyclesCore.Shaders.RhinoFullNxt fnMat1 = null;
@@ -134,6 +136,13 @@ namespace RaytracedBlendMaterial
 		{
 			if (childSlotName == "blend") return factoryKind == "texture";
 			return factoryKind=="material";
+		}
+		public override void SimulateMaterial(ref Rhino.DocObjects.Material simulatedMaterial, bool forDataOnly)
+		{
+			base.SimulateMaterial(ref simulatedMaterial, forDataOnly);
+
+			if (Fields.TryGetValue("mat1", out Color4f color))
+				simulatedMaterial.DiffuseColor = color.AsSystemColor();
 		}
 	}
 }
