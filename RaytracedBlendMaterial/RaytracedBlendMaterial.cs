@@ -22,6 +22,7 @@ using RhinoCyclesCore;
 using Rhino.Display;
 using System.Runtime.InteropServices;
 using static RhinoCyclesCore.Utilities;
+using ccl.ShaderNodes.Sockets;
 
 namespace RaytracedBlendMaterial
 {
@@ -49,9 +50,13 @@ namespace RaytracedBlendMaterial
 		float4 Mat2 { get; set; } = new float4(0.0f);
 		RenderMaterial Mat2Rm { get; set; } = null;
 
+		static int running_serial = 0;
+
+		private int Serial { get; set; }
 
 		public RaytracedBlendMaterial()
 		{
+			Serial = running_serial++;
 			TexturedSlot(this, "mat1", Color4f.White, "Material 1");
 			TexturedSlot(this, "blend", 0.5f, "Blend factor");
 			TexturedSlot(this, "mat2", Color4f.Black, "Material 2");
@@ -65,6 +70,7 @@ namespace RaytracedBlendMaterial
 			{
 				Mat1 = mat1.Item2;
 				Mat1Rm = mat1.Item5?.MakeCopy() as RenderMaterial;
+				if(Mat1Rm is ICyclesMaterial crm1)  crm1.BakeParameters();
 			}
 			var blendcolor = HandleTexturedValue(this, "blend", BlendTex);
 			if (blendcolor.Item1)
@@ -78,33 +84,74 @@ namespace RaytracedBlendMaterial
 			{
 				Mat2 = mat2.Item2;
 				Mat2Rm = mat2.Item5?.MakeCopy() as RenderMaterial;
+				if(Mat2Rm is ICyclesMaterial crm2)  crm2.BakeParameters();
 			}
 		}
 
-		public bool GetShader(Shader sh)
+
+		ccl.ShaderNodes.MixClosureNode blendit;
+		public bool GetShader(Shader sh, bool finalize)
 		{
+			blendit = new ccl.ShaderNodes.MixClosureNode($"blendit{Serial}");
+			sh.AddNode(blendit);
+
 			RhinoCyclesCore.Converters.ShaderConverter sconv = new RhinoCyclesCore.Converters.ShaderConverter();
 			CyclesShader mat1sh = null;
 			CyclesShader mat2sh = null;
+			ICyclesMaterial crm1 = null;
+			ICyclesMaterial crm2 = null;
+			ClosureSocket crm1closure = null;
+			ClosureSocket crm2closure = null;
 			if (Mat1Rm != null)
 			{
-				mat1sh = sconv.CreateCyclesShader(Mat1Rm, Gamma);
-				mat1sh.Gamma = Gamma;
-				RhinoCyclesCore.Converters.BitmapConverter.ReloadTextures(mat1sh);
+				if (Mat1Rm is ICyclesMaterial)
+				{
+					crm1 = Mat1Rm as ICyclesMaterial;
+					crm1.Gamma = Gamma;
+					crm1.GetShader(sh, false);
+					crm1closure = crm1.GetClosureSocket(sh);
+				}
+				else
+				{
+					mat1sh = sconv.CreateCyclesShader(Mat1Rm, Gamma);
+					mat1sh.Gamma = Gamma;
+					RhinoCyclesCore.Converters.BitmapConverter.ReloadTextures(mat1sh);
+				}
 			}
 			if (Mat2Rm != null)
 			{
-				mat2sh = sconv.CreateCyclesShader(Mat2Rm, Gamma);
-				mat2sh.Gamma = Gamma;
-				RhinoCyclesCore.Converters.BitmapConverter.ReloadTextures(mat2sh);
+				if (Mat2Rm is ICyclesMaterial)
+				{
+					crm2 = Mat2Rm as ICyclesMaterial;
+					crm2.Gamma = Gamma;
+					crm2.GetShader(sh, false);
+					crm2closure = crm2.GetClosureSocket(sh);
+				}
+				else
+				{
+					mat2sh = sconv.CreateCyclesShader(Mat2Rm, Gamma);
+					mat2sh.Gamma = Gamma;
+					RhinoCyclesCore.Converters.BitmapConverter.ReloadTextures(mat2sh);
+				}
 			}
 
 			RhinoCyclesCore.Shaders.RhinoFullNxt fnMat1 = null;
-			RhinoCyclesCore.Shaders.RhinoFullNxt fnMat2 = null;
-			if(mat1sh!=null) fnMat1 = new RhinoCyclesCore.Shaders.RhinoFullNxt(null, mat1sh, sh);
-			if(mat2sh!=null) fnMat2 = new RhinoCyclesCore.Shaders.RhinoFullNxt(null, mat2sh, sh);
+			ClosureSocket fnMat1Closure = null;
+			if (mat1sh != null)
+			{
+				fnMat1 = new RhinoCyclesCore.Shaders.RhinoFullNxt(null, mat1sh, sh, false);
+				fnMat1Closure = fnMat1.GetClosureSocket();
+			}
 
-			ccl.ShaderNodes.TextureCoordinateNode texco = new ccl.ShaderNodes.TextureCoordinateNode("texcos");
+			RhinoCyclesCore.Shaders.RhinoFullNxt fnMat2 = null;
+			ClosureSocket fnMat2Closure = null;
+			if (mat2sh != null)
+			{
+				fnMat2 = new RhinoCyclesCore.Shaders.RhinoFullNxt(null, mat2sh, sh, false);
+				fnMat2Closure = fnMat2.GetClosureSocket();
+			}
+
+			ccl.ShaderNodes.TextureCoordinateNode texco = new ccl.ShaderNodes.TextureCoordinateNode($"texcos{Serial}");
 			sh.AddNode(texco);
 
 			ccl.ShaderNodes.DiffuseBsdfNode diffuse1Bsdf = new ccl.ShaderNodes.DiffuseBsdfNode();
@@ -114,21 +161,18 @@ namespace RaytracedBlendMaterial
 			sh.AddNode(diffuse1Bsdf);
 			sh.AddNode(diffuse2Bsdf);
 
-			ccl.ShaderNodes.MixClosureNode blendit = new ccl.ShaderNodes.MixClosureNode("blendit");
 			blendit.ins.Fac.Value = Blend;
-
-			sh.AddNode(blendit);
 
 			GraphForSlot(sh, BlendTexOn, BlendTex, blendit.ins.Fac, texco, true);
 
-			var sock1 = mat1sh != null ? fnMat1.GetClosureSocket() : diffuse1Bsdf.outs.BSDF;
+			var sock1 = fnMat1Closure ?? crm1closure ?? diffuse1Bsdf.outs.BSDF;
 			sock1.Connect(blendit.ins.Closure1);
-			var sock2 = mat2sh != null ? fnMat2.GetClosureSocket() : diffuse2Bsdf.outs.BSDF;
+			var sock2 = fnMat2Closure ?? crm2closure ?? diffuse2Bsdf.outs.BSDF;
 			sock2.Connect(blendit.ins.Closure2);
 
 			blendit.outs.Closure.Connect(sh.Output.ins.Surface);
 
-			sh.FinalizeGraph();
+			if(finalize) sh.FinalizeGraph();
 			return true;
 		}
 
@@ -137,12 +181,18 @@ namespace RaytracedBlendMaterial
 			if (childSlotName == "blend") return factoryKind == "texture";
 			return factoryKind=="material";
 		}
+
 		public override void SimulateMaterial(ref Rhino.DocObjects.Material simulatedMaterial, bool forDataOnly)
 		{
 			base.SimulateMaterial(ref simulatedMaterial, forDataOnly);
 
 			if (Fields.TryGetValue("mat1", out Color4f color))
 				simulatedMaterial.DiffuseColor = color.AsSystemColor();
+		}
+
+		public ClosureSocket GetClosureSocket(Shader sh)
+		{
+			return blendit.outs.Closure;
 		}
 	}
 }
