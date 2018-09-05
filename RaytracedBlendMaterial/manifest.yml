@@ -1,0 +1,9 @@
+---
+name: raytraced-blend-material
+version: 1.2.0
+authors:
+- Nathan 'jesterKing' Letwory
+description: A Blend material for Raytraced
+url: '-'
+secret:
+  id: 4d15807e-2899-495b-9737-58a319a86485
