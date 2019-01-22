@@ -42,9 +42,10 @@ namespace RaytracedBlendMaterial
 		float4 Mat1 { get; set; } = new float4(0.0f);
 		RenderMaterial Mat1Rm { get; set; } = null;
 
-		float Blend { get; set; } = 0.5f;
+		TexturedFloat Blend = new TexturedFloat("blend", 0.5f, false, 0.0f);
+		/*float Blend { get; set; } = 0.5f;
 		public bool BlendTexOn { get; set; } = false;
-		public float BlendTexAmount { get; set; } = 1.0f;
+		public float BlendTexAmount { get; set; } = 1.0f;*/
 		public CyclesTextureImage BlendTex { get; set; } = new CyclesTextureImage();
 
 		float4 Mat2 { get; set; } = new float4(0.0f);
@@ -72,13 +73,9 @@ namespace RaytracedBlendMaterial
 				Mat1Rm = mat1.Item5?.MakeCopy() as RenderMaterial;
 				if(Mat1Rm is ICyclesMaterial crm1)  crm1.BakeParameters();
 			}
-			var blendcolor = HandleTexturedValue(this, "blend", BlendTex);
-			if (blendcolor.Item1)
-			{
-				Blend = blendcolor.Item2;
-				BlendTexOn = blendcolor.Item3;
-				BlendTexAmount = blendcolor.Item4;
-			}
+
+			var blend = HandleTexturedValue("blend", Blend);
+			HandleRenderTexture(Blend.Texture, BlendTex);
 			var mat2 = HandleMaterialSlot(this, "mat2");
 			if (mat2.Item1)
 			{
@@ -161,9 +158,13 @@ namespace RaytracedBlendMaterial
 			sh.AddNode(diffuse1Bsdf);
 			sh.AddNode(diffuse2Bsdf);
 
-			blendit.ins.Fac.Value = Blend;
+			blendit.ins.Fac.Value = Blend.Amount;
 
-			GraphForSlot(sh, BlendTexOn, BlendTex, blendit.ins.Fac, texco, true);
+			ccl.ShaderNodes.ValueNode blendValue = new ccl.ShaderNodes.ValueNode("blendValue");
+			sh.AddNode(blendValue);
+			blendValue.Value = Blend.Amount;
+
+			GraphForSlot(sh, blendValue.outs.Value, Blend.On, Blend.Amount, BlendTex, blendit.ins.Fac, texco, true);
 
 			var sock1 = fnMat1Closure ?? crm1closure ?? diffuse1Bsdf.outs.BSDF;
 			sock1.Connect(blendit.ins.Closure1);
