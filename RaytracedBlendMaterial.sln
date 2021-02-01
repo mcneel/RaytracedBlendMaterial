@@ -7,20 +7,20 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RaytracedBlendMaterial", "R
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		DEV Debug|Any CPU = DEV Debug|Any CPU
-		DEV Release|Any CPU = DEV Release|Any CPU
-		Release|Any CPU = Release|Any CPU
+		Debug|AnyCPU = Debug|AnyCPU
+		DEV Debug|AnyCPU = DEV Debug|AnyCPU
+		DEV Release|AnyCPU = DEV Release|AnyCPU
+		Release|AnyCPU = Release|AnyCPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{3D4C6802-CC84-4E73-82E7-86EC6ECFBBC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3D4C6802-CC84-4E73-82E7-86EC6ECFBBC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3D4C6802-CC84-4E73-82E7-86EC6ECFBBC8}.DEV Debug|Any CPU.ActiveCfg = DEV Debug|Any CPU
-		{3D4C6802-CC84-4E73-82E7-86EC6ECFBBC8}.DEV Debug|Any CPU.Build.0 = DEV Debug|Any CPU
-		{3D4C6802-CC84-4E73-82E7-86EC6ECFBBC8}.DEV Release|Any CPU.ActiveCfg = DEV Release|Any CPU
-		{3D4C6802-CC84-4E73-82E7-86EC6ECFBBC8}.DEV Release|Any CPU.Build.0 = DEV Release|Any CPU
-		{3D4C6802-CC84-4E73-82E7-86EC6ECFBBC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3D4C6802-CC84-4E73-82E7-86EC6ECFBBC8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D4C6802-CC84-4E73-82E7-86EC6ECFBBC8}.Debug|AnyCPU.ActiveCfg = Debug|AnyCPU
+		{3D4C6802-CC84-4E73-82E7-86EC6ECFBBC8}.Debug|AnyCPU.Build.0 = Debug|AnyCPU
+		{3D4C6802-CC84-4E73-82E7-86EC6ECFBBC8}.DEV Debug|AnyCPU.ActiveCfg = DEV Debug|AnyCPU
+		{3D4C6802-CC84-4E73-82E7-86EC6ECFBBC8}.DEV Debug|AnyCPU.Build.0 = DEV Debug|AnyCPU
+		{3D4C6802-CC84-4E73-82E7-86EC6ECFBBC8}.DEV Release|AnyCPU.ActiveCfg = DEV Release|AnyCPU
+		{3D4C6802-CC84-4E73-82E7-86EC6ECFBBC8}.DEV Release|AnyCPU.Build.0 = DEV Release|AnyCPU
+		{3D4C6802-CC84-4E73-82E7-86EC6ECFBBC8}.Release|AnyCPU.ActiveCfg = Release|AnyCPU
+		{3D4C6802-CC84-4E73-82E7-86EC6ECFBBC8}.Release|AnyCPU.Build.0 = Release|AnyCPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
