@@ -1,5 +1,5 @@
 ﻿/**
-Copyright 2017 Robert McNeel and Associates
+Copyright 2017-2021 Robert McNeel and Associates
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,10 +15,11 @@ limitations under the License.
 **/
 
 using Rhino.Render;
-using RhinoCyclesCore.Materials;
 using System;
 using ccl;
 using RhinoCyclesCore;
+using RhinoCyclesCore.Converters;
+using RhinoCyclesCore.Materials;
 using Rhino.Display;
 using System.Runtime.InteropServices;
 using static RhinoCyclesCore.Utilities;
@@ -54,6 +55,7 @@ namespace RaytracedBlendMaterial
 		static int running_serial = 0;
 
 		private int Serial { get; set; }
+		public BitmapConverter BitmapConverter { get; set; }
 
 		public RaytracedBlendMaterial()
 		{
@@ -63,7 +65,7 @@ namespace RaytracedBlendMaterial
 			TexturedSlot(this, "mat2", Color4f.Black, "Material 2");
 		}
 
-		public void BakeParameters()
+		public void BakeParameters(BitmapConverter bitmapConverter)
 		{
 
 			var mat1 = HandleMaterialSlot(this, "mat1");
@@ -71,17 +73,17 @@ namespace RaytracedBlendMaterial
 			{
 				Mat1 = mat1.Item2;
 				Mat1Rm = mat1.Item5?.MakeCopy() as RenderMaterial;
-				if(Mat1Rm is ICyclesMaterial crm1)  crm1.BakeParameters();
+				if(Mat1Rm is ICyclesMaterial crm1)  crm1.BakeParameters(bitmapConverter);
 			}
 
 			var blend = HandleTexturedValue("blend", Blend);
-			HandleRenderTexture(Blend.Texture, BlendTex);
+			HandleRenderTexture(Blend.Texture, BlendTex, false, bitmapConverter, 1.0f);
 			var mat2 = HandleMaterialSlot(this, "mat2");
 			if (mat2.Item1)
 			{
 				Mat2 = mat2.Item2;
 				Mat2Rm = mat2.Item5?.MakeCopy() as RenderMaterial;
-				if(Mat2Rm is ICyclesMaterial crm2)  crm2.BakeParameters();
+				if(Mat2Rm is ICyclesMaterial crm2)  crm2.BakeParameters(bitmapConverter);
 			}
 		}
 
@@ -91,6 +93,11 @@ namespace RaytracedBlendMaterial
 		{
 			blendit = new ccl.ShaderNodes.MixClosureNode($"blendit{Serial}");
 			sh.AddNode(blendit);
+
+			LinearWorkflow linearWorkflow = new LinearWorkflow();
+			linearWorkflow.PostProcessGamma = Gamma;
+			linearWorkflow.PreProcessGamma = Gamma;
+			linearWorkflow.PostProcessGammaOn = Gamma != 1.0f;
 
 			RhinoCyclesCore.Converters.ShaderConverter sconv = new RhinoCyclesCore.Converters.ShaderConverter();
 			CyclesShader mat1sh = null;
@@ -110,9 +117,9 @@ namespace RaytracedBlendMaterial
 				}
 				else
 				{
-					mat1sh = sconv.CreateCyclesShader(Mat1Rm, Gamma);
+					mat1sh = sconv.CreateCyclesShader(Mat1Rm, linearWorkflow, Mat1Rm.RenderHash, BitmapConverter);
 					mat1sh.Gamma = Gamma;
-					RhinoCyclesCore.Converters.BitmapConverter.ReloadTextures(mat1sh);
+					BitmapConverter.ReloadTextures(mat1sh);
 				}
 			}
 			if (Mat2Rm != null)
@@ -126,9 +133,9 @@ namespace RaytracedBlendMaterial
 				}
 				else
 				{
-					mat2sh = sconv.CreateCyclesShader(Mat2Rm, Gamma);
+					mat2sh = sconv.CreateCyclesShader(Mat2Rm, linearWorkflow, Mat2Rm.RenderHash, BitmapConverter);
 					mat2sh.Gamma = Gamma;
-					RhinoCyclesCore.Converters.BitmapConverter.ReloadTextures(mat2sh);
+					BitmapConverter.ReloadTextures(mat2sh);
 				}
 			}
 

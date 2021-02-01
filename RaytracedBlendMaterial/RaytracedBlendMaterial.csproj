@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Configuration Condition=" '$(Configuration)' == '' ">DEV Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>RaytracedBlendMaterial</RootNamespace>
     <AssemblyName>RaytracedBlendMaterial</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <IsWebBootstrapper>false</IsWebBootstrapper>
   </PropertyGroup>
@@ -58,11 +58,11 @@
     <When Condition="'$(Configuration.Substring(0,3))' != 'DEV'">
       <ItemGroup>
         <Reference Include="csycles">
-          <HintPath>C:\Program Files\Rhino 6\Plug-ins\csycles.dll</HintPath>
+          <HintPath>C:\Program Files\Rhino 7\Plug-ins\csycles.dll</HintPath>
           <Private>False</Private>
         </Reference>
         <Reference Include="RhinoCyclesCore">
-          <HintPath>C:\Program Files\Rhino 6\Plug-ins\RhinoCyclesCore.dll</HintPath>
+          <HintPath>C:\Program Files\Rhino 7\Plug-ins\RhinoCyclesCore.dll</HintPath>
           <Private>False</Private>
         </Reference>
         <Reference Include="System" />
@@ -71,17 +71,17 @@
         <Reference Include="Microsoft.CSharp" />
         <Reference Include="RhinoCommon">
           <SpecificVersion>False</SpecificVersion>
-          <HintPath>C:\Program Files\Rhino 6\System\rhinocommon.dll</HintPath>
+          <HintPath>C:\Program Files\Rhino 7\System\rhinocommon.dll</HintPath>
           <Private>False</Private>
         </Reference>
         <Reference Include="Eto">
           <SpecificVersion>False</SpecificVersion>
-          <HintPath>C:\Program Files\Rhino 6\System\Eto.dll</HintPath>
+          <HintPath>C:\Program Files\Rhino 7\System\Eto.dll</HintPath>
           <Private>False</Private>
         </Reference>
         <Reference Include="Rhino.UI">
           <SpecificVersion>False</SpecificVersion>
-          <HintPath>C:\Program Files\Rhino 6\System\Rhino.UI.dll</HintPath>
+          <HintPath>C:\Program Files\Rhino 7\System\Rhino.UI.dll</HintPath>
           <Private>False</Private>
         </Reference>
       </ItemGroup>
@@ -89,11 +89,11 @@
     <When Condition="'$(Configuration.Substring(0,3))' == 'DEV'">
       <ItemGroup>
         <Reference Include="csycles">
-          <HintPath>D:\Dev\Rhino\rhino\src4\bin\Debug\Plug-ins\csycles.dll</HintPath>
+          <HintPath>D:\Dev\Rhino\rhino7\src4\bin\Debug\Plug-ins\csycles.dll</HintPath>
           <Private>False</Private>
         </Reference>
         <Reference Include="RhinoCyclesCore">
-          <HintPath>D:\Dev\Rhino\rhino\src4\bin\Debug\Plug-ins\RhinoCyclesCore.dll</HintPath>
+          <HintPath>D:\Dev\Rhino\rhino7\src4\bin\Debug\Plug-ins\RhinoCyclesCore.dll</HintPath>
           <Private>False</Private>
         </Reference>
         <Reference Include="System" />
@@ -102,17 +102,17 @@
         <Reference Include="Microsoft.CSharp" />
         <Reference Include="RhinoCommon">
           <SpecificVersion>False</SpecificVersion>
-          <HintPath>D:\Dev\Rhino\rhino\src4\bin\Debug\rhinocommon.dll</HintPath>
+          <HintPath>D:\Dev\Rhino\rhino7\src4\bin\Debug\rhinocommon.dll</HintPath>
           <Private>False</Private>
         </Reference>
         <Reference Include="Eto">
           <SpecificVersion>False</SpecificVersion>
-          <HintPath>D:\Dev\Rhino\rhino\src4\bin\Debug\Eto.dll</HintPath>
+          <HintPath>D:\Dev\Rhino\rhino7\src4\bin\Debug\Eto.dll</HintPath>
           <Private>False</Private>
         </Reference>
         <Reference Include="Rhino.UI">
           <SpecificVersion>False</SpecificVersion>
-          <HintPath>D:\Dev\Rhino\rhino\src4\bin\Debug\Rhino.UI.dll</HintPath>
+          <HintPath>D:\Dev\Rhino\rhino7\src4\bin\Debug\Rhino.UI.dll</HintPath>
           <Private>False</Private>
         </Reference>
       </ItemGroup>
@@ -130,7 +130,7 @@
     <None Include="manifest.yml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
@@ -143,7 +143,7 @@
   <Choose>
     <When Condition="'$(Configuration.Substring(0,3))' == 'DEV'">
       <PropertyGroup>
-        <StartProgram>D:\Dev\Rhino\rhino\src4\bin\Debug\Rhino.exe</StartProgram>
+        <StartProgram>D:\Dev\Rhino\rhino7\src4\bin\Debug\Rhino.exe</StartProgram>
         <StartArguments>
         </StartArguments>
         <StartAction>Program</StartAction>
@@ -151,7 +151,7 @@
     </When>
     <When Condition="'$(Configuration.Substring(0,3))' != 'DEV'">
       <PropertyGroup>
-        <StartProgram>C:\Program Files\Rhino 6\System\Rhino.exe</StartProgram>
+        <StartProgram>C:\Program Files\Rhino 7\System\Rhino.exe</StartProgram>
         <StartArguments>
         </StartArguments>
         <StartAction>Program</StartAction>
