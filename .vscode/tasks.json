@@ -10,8 +10,8 @@
             "args": [
                 // Ask msbuild to generate full paths for file names.
                 "/property:GenerateFullPaths=true",
-                "/property:Configuration=DEV Release",
-                "/property:Platform=Any CPU",
+                "/property:Configuration=${input:configuration}",
+                "/property:Platform=AnyCPU",
                 "/t:build",
                 // Do not generate summary otherwise it leads to duplicate errors in Problems panel
                 "/consoleloggerparameters:NoSummary"
@@ -19,10 +19,51 @@
             "group": "build",
             "presentation": {
                 // Reveal the output only if unrecognized errors occur.
-                "reveal": "silent"
+                "reveal": "always"
             },
             // Use the standard MS compiler pattern to detect errors, warnings and infos
             "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "yak package",
+            "type": "shell",
+            "command": "C:/Program Files/Rhino 7/System/Yak.exe",
+            "args": [
+                "build"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/RaytracedBlendMaterial/bin/${input:configuration}",
+            },
+            "group": "build",
+            "presentation": {
+                // Reveal the output only if unrecognized errors occur.
+                "reveal": "always"
+            },
+            // Use the standard MS compiler pattern to detect errors, warnings and infos
+            "problemMatcher": "$msCompile"
+        }
+    ],
+    "inputs": [
+        {
+            "type": "pickString",
+            "id": "configuration",
+            "description": "Build Configuration",
+            "options": [
+                "DEV Debug",
+                "Debug",
+                "DEV Release",
+                "Release",
+            ],
+            "default": "DEV Release"
+        },
+        {
+            "type": "pickString",
+            "id": "confirm",
+            "description": "Confirm?",
+            "options": [
+                "No",
+                "Yes"
+            ]
         }
     ]
 }
