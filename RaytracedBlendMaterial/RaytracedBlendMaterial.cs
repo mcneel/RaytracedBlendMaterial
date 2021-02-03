@@ -98,6 +98,7 @@ namespace RaytracedBlendMaterial
 			linearWorkflow.PostProcessGamma = Gamma;
 			linearWorkflow.PreProcessGamma = Gamma;
 			linearWorkflow.PostProcessGammaOn = Gamma != 1.0f;
+			linearWorkflow.PreProcessColors = linearWorkflow.PreProcessTextures = linearWorkflow.PostProcessGammaOn;
 
 			RhinoCyclesCore.Converters.ShaderConverter sconv = new RhinoCyclesCore.Converters.ShaderConverter();
 			CyclesShader mat1sh = null;
@@ -117,7 +118,7 @@ namespace RaytracedBlendMaterial
 				}
 				else
 				{
-					mat1sh = sconv.CreateCyclesShader(Mat1Rm, linearWorkflow, Mat1Rm.RenderHash, BitmapConverter);
+					mat1sh = sconv.CreateCyclesShader(Mat1Rm, linearWorkflow, Mat1Rm.RenderHashExclude(CrcRenderHashFlags.ExcludeLinearWorkflow, "", linearWorkflow), BitmapConverter);
 					mat1sh.Gamma = Gamma;
 					BitmapConverter.ReloadTextures(mat1sh);
 				}
@@ -133,7 +134,7 @@ namespace RaytracedBlendMaterial
 				}
 				else
 				{
-					mat2sh = sconv.CreateCyclesShader(Mat2Rm, linearWorkflow, Mat2Rm.RenderHash, BitmapConverter);
+					mat2sh = sconv.CreateCyclesShader(Mat2Rm, linearWorkflow, Mat2Rm.RenderHashExclude(CrcRenderHashFlags.ExcludeLinearWorkflow, "", linearWorkflow), BitmapConverter);
 					mat2sh.Gamma = Gamma;
 					BitmapConverter.ReloadTextures(mat2sh);
 				}

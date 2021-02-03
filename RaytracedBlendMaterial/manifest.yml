@@ -1,6 +1,6 @@
 ---
 name: raytraced-blend-material
-version: 1.4.0+v7.4-rh7-any
+version: 1.5.0
 authors:
 - Nathan 'jesterKing' Letwory
 description: A Blend material for Raytraced
