@@ -20,6 +20,7 @@ using ccl;
 using RhinoCyclesCore;
 using RhinoCyclesCore.Converters;
 using RhinoCyclesCore.Materials;
+using RhinoCyclesCore.ExtensionMethods;
 using Rhino.Display;
 using System.Runtime.InteropServices;
 using static RhinoCyclesCore.Utilities;
@@ -69,20 +70,20 @@ namespace RaytracedBlendMaterial
 		{
 
 			var mat1 = HandleMaterialSlot(this, "mat1");
-			if(mat1.Item1)
+			if(mat1.Success)
 			{
-				Mat1 = mat1.Item2;
-				Mat1Rm = mat1.Item5?.MakeCopy() as RenderMaterial;
+				Mat1 = mat1.Result;
+				Mat1Rm = mat1.Child?.MakeCopy() as RenderMaterial;
 				if(Mat1Rm is ICyclesMaterial crm1)  crm1.BakeParameters(bitmapConverter);
 			}
 
 			var blend = HandleTexturedValue("blend", Blend);
 			HandleRenderTexture(Blend.Texture, BlendTex, false, bitmapConverter, 1.0f);
 			var mat2 = HandleMaterialSlot(this, "mat2");
-			if (mat2.Item1)
+			if (mat2.Success)
 			{
-				Mat2 = mat2.Item2;
-				Mat2Rm = mat2.Item5?.MakeCopy() as RenderMaterial;
+				Mat2 = mat2.Result;
+				Mat2Rm = mat2.Child?.MakeCopy() as RenderMaterial;
 				if(Mat2Rm is ICyclesMaterial crm2)  crm2.BakeParameters(bitmapConverter);
 			}
 		}
@@ -118,7 +119,7 @@ namespace RaytracedBlendMaterial
 				}
 				else
 				{
-					mat1sh = sconv.CreateCyclesShader(Mat1Rm, linearWorkflow, Mat1Rm.RenderHashExclude(CrcRenderHashFlags.ExcludeLinearWorkflow, "", linearWorkflow), BitmapConverter);
+					mat1sh = sconv.CreateCyclesShader(Mat1Rm, linearWorkflow, Mat1Rm.RenderHashExclude(CrcRenderHashFlags.ExcludeLinearWorkflow, "", linearWorkflow), BitmapConverter, null);
 					mat1sh.Gamma = Gamma;
 					BitmapConverter.ReloadTextures(mat1sh);
 				}
@@ -134,7 +135,7 @@ namespace RaytracedBlendMaterial
 				}
 				else
 				{
-					mat2sh = sconv.CreateCyclesShader(Mat2Rm, linearWorkflow, Mat2Rm.RenderHashExclude(CrcRenderHashFlags.ExcludeLinearWorkflow, "", linearWorkflow), BitmapConverter);
+					mat2sh = sconv.CreateCyclesShader(Mat2Rm, linearWorkflow, Mat2Rm.RenderHashExclude(CrcRenderHashFlags.ExcludeLinearWorkflow, "", linearWorkflow), BitmapConverter, null);
 					mat2sh.Gamma = Gamma;
 					BitmapConverter.ReloadTextures(mat2sh);
 				}
@@ -172,7 +173,7 @@ namespace RaytracedBlendMaterial
 			sh.AddNode(blendValue);
 			blendValue.Value = Blend.Amount;
 
-			GraphForSlot(sh, blendValue.outs.Value, Blend.On, Blend.Amount, BlendTex, blendit.ins.Fac, texco, true);
+			GraphForSlot(sh, blendValue.outs.Value, Blend.On, Blend.Amount, BlendTex, blendit.ins.Fac.ToList(), texco, true);
 
 			var sock1 = fnMat1Closure ?? crm1closure ?? diffuse1Bsdf.outs.BSDF;
 			sock1.Connect(blendit.ins.Closure1);
