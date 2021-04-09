@@ -1,0 +1,53 @@
+<Project>
+
+  <PropertyGroup>
+    <Company>Nathan 'jesterKing' Letwory</Company>
+    <Description>A blend material for Raytraced / Rhino Render</Description>
+    <Copyright>Copyright © Robert McNeel &amp; Associates 2017-2021</Copyright>
+    <Deterministic>False</Deterministic>
+    <Version>1.6.0.0</Version>
+    <Title>RaytracedBlendMaterial</Title>
+
+    <!--<RhinoVersion>8.0.21089.12305-wip</RhinoVersion>-->
+
+    <OutputPath>bin\$(Configuration)</OutputPath>
+    <TargetFramework>net48</TargetFramework>
+    <TargetExt>.rhp</TargetExt>
+    <ProjectGuid>{3D4C6802-CC84-4E73-82E7-86EC6ECFBBC8}</ProjectGuid>
+    <Guid>{3D4C6802-CC84-4E73-82E7-86EC6ECFBBC8}</Guid>
+
+    <LangVersion>7.3</LangVersion>
+    <BaseIntermediateOutputPath Condition="$(BaseIntermediateOutputPath) == ''">obj\$(OS)\</BaseIntermediateOutputPath>
+    <DefaultItemExcludes>$(DefaultItemExcludes);obj\**\*</DefaultItemExcludes>
+    <AppendTargetFrameworkToOutputPath>False</AppendTargetFrameworkToOutputPath>
+    <SolutionDir Condition="$(SolutionDir) == ''">$(MSBuildThisFileDirectory)</SolutionDir>
+
+    <AllowedReferenceRelatedDebugFileExtensions>.pdb;.rhp.pdb</AllowedReferenceRelatedDebugFileExtensions>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <!-- Ensure assembly AND file version have an auto-incremented version number -->
+    <AssemblyVersionMajorMinor>$([System.Version]::Parse($([System.String]::Copy('$(Version)'))).ToString(2))</AssemblyVersionMajorMinor>
+    <DaysSince2000>$([System.DateTime]::UtcNow.Subtract($([System.DateTime]::Parse('2000-01-01T00:00:00Z'))).Days)</DaysSince2000>
+    <SecondsOfTodayHalved>$([MSBuild]::Divide($([System.DateTime]::UtcNow.Subtract($([System.DateTime]::UtcNow.Date)).TotalSeconds), 2).ToString('0'))</SecondsOfTodayHalved>
+    <AssemblyVersion>$(AssemblyVersionMajorMinor).$(DaysSince2000).$(SecondsOfTodayHalved)</AssemblyVersion>
+    <InformationalVersion>$(AssemblyVersion)</InformationalVersion>
+  </PropertyGroup>
+
+  <Target Name="_RenamePdbFile" BeforeTargets="BeforeBuild;CopyFilesToOutputDirectory" Condition=" '$(OS)' != 'Windows_NT' AND $(TargetExt) != '.dll' ">
+    <!-- Rename debug file to '[Assembly].rhp.pdb' for mono to recognize it for debugging.
+
+         Note: this is only done when building on a Mac.
+         -->
+    <PropertyGroup>
+      <PdbFile>$(OutputPath)$(TargetName)$(TargetExt).pdb</PdbFile>
+    </PropertyGroup>
+  </Target>
+
+</Project>

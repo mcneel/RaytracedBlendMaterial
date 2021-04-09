@@ -1,4 +1,102 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>RaytracedBlendMaterial</RootNamespace>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+  </PropertyGroup>
+  <Choose>
+    <When Condition="'!$(Configuration.StartsWith(`DEV`))'">
+      <ItemGroup>
+        <Reference Include="csycles">
+          <HintPath>C:\Program Files\Rhino 7\Plug-ins\csycles.dll</HintPath>
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="RhinoCyclesCore">
+          <HintPath>C:\Program Files\Rhino 7\Plug-ins\RhinoCyclesCore.dll</HintPath>
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="RhinoCommon">
+          <SpecificVersion>False</SpecificVersion>
+          <HintPath>C:\Program Files\Rhino 7\System\rhinocommon.dll</HintPath>
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Eto">
+          <SpecificVersion>False</SpecificVersion>
+          <HintPath>C:\Program Files\Rhino 7\System\Eto.dll</HintPath>
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Rhino.UI">
+          <SpecificVersion>False</SpecificVersion>
+          <HintPath>C:\Program Files\Rhino 7\System\Rhino.UI.dll</HintPath>
+          <Private>False</Private>
+        </Reference>
+      </ItemGroup>
+    </When>
+    <When Condition="'$(Configuration.StartsWith(`DEV`))'">
+      <ItemGroup>
+        <Reference Include="csycles">
+          <HintPath>D:\Dev\Rhino\rhino7\src4\bin\Debug\Plug-ins\csycles.dll</HintPath>
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="RhinoCyclesCore">
+          <HintPath>D:\Dev\Rhino\rhino7\src4\bin\Debug\Plug-ins\RhinoCyclesCore.dll</HintPath>
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="RhinoCommon">
+          <SpecificVersion>False</SpecificVersion>
+          <HintPath>D:\Dev\Rhino\rhino7\src4\bin\Debug\rhinocommon.dll</HintPath>
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Eto">
+          <SpecificVersion>False</SpecificVersion>
+          <HintPath>D:\Dev\Rhino\rhino7\src4\bin\Debug\Eto.dll</HintPath>
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Rhino.UI">
+          <SpecificVersion>False</SpecificVersion>
+          <HintPath>D:\Dev\Rhino\rhino7\src4\bin\Debug\Rhino.UI.dll</HintPath>
+          <Private>False</Private>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <!--<ItemGroup>
+    <Compile Include="RaytracedBlendMaterial.cs" />
+    <Compile Include="RaytracedBlendMaterialPlugIn.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>-->
+  <ItemGroup>
+    <EmbeddedResource Include="EmbeddedResources\plugin-utility.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="manifest.yml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <PropertyGroup>
+    <FallbackCulture>en-US</FallbackCulture>
+  </PropertyGroup>
+  <Choose>
+    <When Condition="'$(Configuration.StartsWith(`DEV`))'">
+      <PropertyGroup>
+        <StartProgram>D:\Dev\Rhino\rhino7\src4\bin\Debug\Rhino.exe</StartProgram>
+        <StartArguments>
+        </StartArguments>
+        <StartAction>Program</StartAction>
+      </PropertyGroup>
+    </When>
+    <When Condition="'!$(Configuration.StartsWith(`DEV`))'">
+      <PropertyGroup>
+        <StartProgram>C:\Program Files\Rhino 7\System\Rhino.exe</StartProgram>
+        <StartArguments>
+        </StartArguments>
+        <StartAction>Program</StartAction>
+      </PropertyGroup>
+    </When>
+  </Choose>
+</Project>
+<!--
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">DEV Release</Configuration>
@@ -132,13 +230,6 @@
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
   <PropertyGroup>
     <FallbackCulture>en-US</FallbackCulture>
   </PropertyGroup>
@@ -161,3 +252,4 @@
     </When>
   </Choose>
 </Project>
+-->
